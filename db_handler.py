@@ -82,6 +82,7 @@ def __hash_password(pswd: str):
      return pswd_hash
 
 
+
 # Служебная функция записи приходной операции
 def add_summa_to_db(username: str, summa: float, comment:str):
     connect, cursor = __db_connection()
@@ -92,6 +93,7 @@ def add_summa_to_db(username: str, summa: float, comment:str):
     return f'Сумма {summa} добавлена в раздел "Доходы"'
 
 
+
 # Служебная функция записи расходной операции
 def sub_summa_to_db(username: str, summa: float, comment:str):
     connect, cursor = __db_connection()
@@ -100,3 +102,19 @@ def sub_summa_to_db(username: str, summa: float, comment:str):
     connect.commit()
     connect.close()
     return f'Сумма {summa} добавлена в раздел "Расходы"'
+
+
+
+# Добавление финансовой цели в бд
+def add_new_fingoal(username: str, new_fingoal: str):
+    summa, fingoal = tuple(new_fingoal.split('\n')[:2])
+    print(f'переданы сумма={summa},  цель={fingoal}')
+    connect, cursor = __db_connection()
+    trans = username, summa, fingoal, date.today()
+    cursor.execute("INSERT INTO fingoals (username, summa, goal_info, data) VALUES(?, ?, ?, ?);", trans)
+    connect.commit()
+    connect.close()
+    return f'Сумма {summa} добавлена в раздел "Финансовая цель"'
+
+
+

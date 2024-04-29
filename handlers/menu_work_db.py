@@ -48,38 +48,16 @@ async def insert_to_db_expense(message: types.Message):
 
 
 
-# Добавление новой финансовой цели
-@menu_work_db.callback_query(F.data == 'add_fingoal')
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
+# Добавление новой финансовой цели, формат сумма\nкомментарий
+@menu_work_db.message(F.text.contains("%"))
+async def add_new_fingoal(message: types.Message):
+    print('Отработал отлов %')
+    user_id = message.from_user.id
+    fingoal = message.text.replace("%", "")
+    result = dbh.add_new_fingoal(user_id, fingoal)
+    await message.answer(f"{result}", reply_markup = dh.make_work_menu())
 
 
 
-# Предоставить информацию ою уже созданных финансовых целях
-@menu_work_db.callback_query(F.data == 'user_fingoal')
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
 
 
-# Отправка клавиатуры статистики
-@menu_work_db.callback_query(F.data == 'statistic_kb')
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
-
-
-# Отправка клавиатуры меню удаления
-@menu_work_db.callback_query(F.data == 'delete')
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
-
-
-# Отправка статистики за выбранный период
-@menu_work_db.callback_query(F.text.contains("_stat"))
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
-
-
-# Удаление выбранного объекта, финансовой цели или операции
-@menu_work_db.callback_query(F.text.contains("del_"))
-async def add_new_fingoal(callback: CallbackQuery):
-    pass

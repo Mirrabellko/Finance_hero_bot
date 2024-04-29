@@ -19,18 +19,55 @@ async def send_welcome(message: types.Message):
 @menu_low.callback_query(F.data == 'new_user')
 async def reg_new_user(callback: CallbackQuery):
     await callback.answer('Начинаем регистрацию', show_alert=True)
-    await callback.message.edit_text("Придумай свой пароль. \nНеобходимо отправить по следующему образцу \n(Образец: =пароль)")
+    await callback.message.edit_text("Придумай свой пароль. \nНеобходимо отправить по следующему образцу:\n(Образец: =пароль)")
 
 
 # Обработчик возврата в главное меню
 @menu_low.callback_query(F.data == 'start')
 async def start_menu(callback: CallbackQuery):
-    await callback.edit_text('Главное меню', show_alert=True)
+    await callback.message.edit_text('Главное меню', show_alert=True)
     await send_welcome(callback.message)
 
 
 # Обработчик входа в систему
 @menu_low.callback_query(F.data == 'old_user')
-async def start_menu(callback: CallbackQuery):
+async def password_menu(callback: CallbackQuery):
     await callback.answer('Вспоминай свой пароль', show_alert=True)
-    await callback.message.edit_text("Введи свой пароль по образцу. \n(Образец: =пароль)")
+    await callback.message.edit_text("Введи свой пароль по образцу:\n(Образец: =пароль)")
+
+
+# Обработчик выбора постановки новой цели
+@menu_low.callback_query(F.data == 'add_fingoal')
+async def fingoal_menu(callback: CallbackQuery):
+    await callback.message.edit_text('Введи свою финансовую цель по следующему образцу:\n(Образец:\n%сумма\nкомментарий)')
+    
+
+
+# Предоставить информацию ою уже созданных финансовых целях
+@menu_low.callback_query(F.data == 'user_fingoal')
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Отправка клавиатуры статистики
+@menu_low.callback_query(F.data == 'statistic_kb')
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Отправка клавиатуры меню удаления
+@menu_low.callback_query(F.data == 'delete')
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Отправка статистики за выбранный период
+@menu_low.callback_query(F.text.contains("_stat"))
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Удаление выбранного объекта, финансовой цели или операции
+@menu_low.callback_query(F.text.contains("del_"))
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
