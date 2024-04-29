@@ -12,7 +12,6 @@ menu_work_db = Router()
 # Обработчик логина и пароля
 @menu_work_db.message(F.text.contains("="))
 async def check_login_pass(message: types.Message):
-    #if message.text.find("="):
     try:
         user_id = message.from_user.id
         password = message.text.split('=')[1]
@@ -21,10 +20,11 @@ async def check_login_pass(message: types.Message):
         print(f'{password} пароль для регистрации')
 
         result = dbh.register_new_user(user_id, password)
-        #kb =  Сюда клавиатуру для статистики+ описание в тексте, как добавлять операции.
-        await message.answer(f"{result}") # добавить клавиатуру
+        
+        add_info = '\n\nДля добавления операции используйте формат:\n✔️\n + сумма\nкомментарий\n<b>или</b>\n❌\n - сумма\nкомментарий'
+        await message.answer(f"{result+add_info}", reply_markup=dh.make_work_menu())
     except ValueError:
-        await message.edit_text("Попробуй еще раз! Образец: =пароль")
+        await message.answer("Попробуй еще раз! Образец: =пароль")
         
 
 # Обработчик добавления дохода, формат +100.50\nкомментарий
@@ -34,15 +34,52 @@ async def insert_to_db_income(message: types.Message):
     summa, comment = message.text.split('\n')
     summa = float(summa.replace('+', '').replace(',', '.').replace(' ', ''))
     result = dbh.add_summa_to_db(user_id, summa, comment)
-    await message.edit_text(f"{result}") # добавить клавиатуру
+    await message.answer(f"{result}", reply_markup = dh.make_work_menu())
 
 
-# Обработчик добавления расхода, формат +100.50\nкомментарий
+# Обработчик добавления расхода, формат -100.50\nкомментарий
 @menu_work_db.message(F.text.contains("-"))
 async def insert_to_db_expense(message: types.Message):
     user_id = message.from_user.id
     summa, comment = message.text.split('\n')
     summa = float(summa.replace('-', '').replace(',', '.').replace(' ', ''))
     result = dbh.sub_summa_to_db(user_id, summa, comment)
-    await message.edit_text(f"{result}") # добавить клавиатуру
+    await message.answer(f"{result}", reply_markup = dh.make_work_menu())
 
+
+
+# Добавление новой финансовой цели
+@menu_work_db.callback_query(F.data == 'add_fingoal')
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+
+# Предоставить информацию ою уже созданных финансовых целях
+@menu_work_db.callback_query(F.data == 'user_fingoal')
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Отправка клавиатуры статистики
+@menu_work_db.callback_query(F.data == 'statistic_kb')
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Отправка клавиатуры меню удаления
+@menu_work_db.callback_query(F.data == 'delete')
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Отправка статистики за выбранный период
+@menu_work_db.callback_query(F.text.contains("_stat"))
+async def add_new_fingoal(callback: CallbackQuery):
+    pass
+
+
+# Удаление выбранного объекта, финансовой цели или операции
+@menu_work_db.callback_query(F.text.contains("del_"))
+async def add_new_fingoal(callback: CallbackQuery):
+    pass

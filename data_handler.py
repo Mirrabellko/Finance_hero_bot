@@ -24,6 +24,15 @@ def make_work_menu():
         [InlineKeyboardButton(text='Удаление ...', callback_data='delete')],
         [InlineKeyboardButton(text='<--', callback_data='start')]
     ])
+    '''
+    Доработать, чтобы корректно отрабатывала авторизация
+    start_work = ReplyKeyboardBuilder()
+    start_work.add([KeyboardButton(text='Статистика за ...'),
+                    KeyboardButton(text='Мои финансовые цели'),
+                    KeyboardButton(text='Поставить новую цель'),
+                    KeyboardButton(text='Удаление ...'),
+                    KeyboardButton(text='Стартовое меню')])
+                    '''
     return start_work_kb
 
 
