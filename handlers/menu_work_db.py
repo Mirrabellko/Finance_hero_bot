@@ -27,6 +27,7 @@ async def check_login_pass(message: types.Message):
         await message.answer("Попробуй еще раз! Образец: =пароль")
         
 
+
 # Обработчик добавления дохода, формат +100.50\nкомментарий
 @menu_work_db.message(F.text.contains("+"))
 async def insert_to_db_income(message: types.Message):
@@ -35,6 +36,7 @@ async def insert_to_db_income(message: types.Message):
     summa = float(summa.replace('+', '').replace(',', '.').replace(' ', ''))
     result = dbh.add_summa_to_db(user_id, summa, comment)
     await message.answer(f"{result}", reply_markup = dh.make_work_menu())
+
 
 
 # Обработчик добавления расхода, формат -100.50\nкомментарий
@@ -59,5 +61,20 @@ async def add_new_fingoal(message: types.Message):
 
 
 
+# Удаление финансовой цели или операции. Формат !сумма\nкомментарий
+@menu_work_db.message(F.text.contains("!"))
+async def delete_trans_or_fingoal(message: types.Message):
+    print('Отработал отлов !')
+    user_id = message.from_user.id
+
+    # Проверка, является ли указанная сумма операцией
+    result = dbh.del_fingoal(user_id, message.text)
+    
+    # Проверка, является ли казанная сумма финансовой целью
+    result = dbh.del_transaction(user_id, message.text)
+
+    await message.answer(f"{result}", reply_markup = dh.make_work_menu())
 
 
+
+# !!! Прописать обработчик по отлову без символов

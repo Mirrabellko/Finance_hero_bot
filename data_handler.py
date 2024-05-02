@@ -1,7 +1,7 @@
 from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton, 
                            InlineKeyboardMarkup, InlineKeyboardButton)
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
-from aiogram.types import BotCommand
+from aiogram import types
 
 
 
@@ -24,15 +24,7 @@ def make_work_menu():
         [InlineKeyboardButton(text='Удаление ...', callback_data='delete')],
         [InlineKeyboardButton(text='<--', callback_data='start')]
     ])
-    '''
-    Доработать, чтобы корректно отрабатывала авторизация
-    start_work = ReplyKeyboardBuilder()
-    start_work.add([KeyboardButton(text='Статистика за ...'),
-                    KeyboardButton(text='Мои финансовые цели'),
-                    KeyboardButton(text='Поставить новую цель'),
-                    KeyboardButton(text='Удаление ...'),
-                    KeyboardButton(text='Стартовое меню')])
-                    '''
+    
     return start_work_kb
 
 
@@ -54,3 +46,4 @@ def detele_keyboard():
         [InlineKeyboardButton(text='Финансовая цель', callback_data='del_fingoal')],
         [InlineKeyboardButton(text='<--', callback_data='work_menu')]
     ])
+    return delete_kb

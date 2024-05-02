@@ -58,7 +58,8 @@ async def add_new_fingoal(callback: CallbackQuery):
 # Отправка клавиатуры меню удаления
 @menu_low.callback_query(F.data == 'delete')
 async def add_new_fingoal(callback: CallbackQuery):
-    pass
+    await callback.message.edit_text("Что хочешь удалить?☠️\nВведи сумму и комментарий к ней.\n(Образец: !сумма\nкомментарий)")
+
 
 
 # Отправка статистики за выбранный период
@@ -67,7 +68,3 @@ async def add_new_fingoal(callback: CallbackQuery):
     pass
 
 
-# Удаление выбранного объекта, финансовой цели или операции
-@menu_low.callback_query(F.text.contains("del_"))
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
