@@ -146,6 +146,42 @@ def add_new_fingoal(username: str, new_fingoal: str):
 
 
 
+# Выборка для пользователя его финансовых целей
+def search_user_fingoals(username: str):
+
+    connect, cursor = __db_connection()
+
+    cursor.execute("SELECT goal_info, summa, progress FROM fingoals WHERE username=?", (username, ))
+    user_goals = cursor.fetchall()
+    print("Найдены цели", user_goals)
+    result = __make_fingoals_str(user_goals)
+
+    connect.commit()
+    connect.close()
+
+    return result
+
+
+# Красивое оформление проводок из бд:
+def __make_fingoals_str(user_fingoals: list[tuple]):
+    updown = "__________________________\n"
+    title =  "    Сумма        |     Цель\n"
+    result = updown + title + updown
+
+    print(result)
+    for elem in user_fingoals:
+        goal, summa, progress = elem
+        if progress == 1:
+            progress = '✔️'
+        else:
+            progress = '💰'
+        result = result + "\n" + progress + "      " + str(summa) + "      " + goal  +  "\n"
+    
+    result += updown
+
+    return result
+
+
 # Удаление финансовой цели
 def del_fingoal(username: str, keyword: str):
 
@@ -320,3 +356,6 @@ def __check_keyword(keyword: str):
             return float(i), key_list[1]
         else:
             return None, "🔴Сумма не найдена.\nВведите сумму для удаления.\n(Образец: !сумма\nкомментарий)"
+
+
+# 

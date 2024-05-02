@@ -45,8 +45,10 @@ async def fingoal_menu(callback: CallbackQuery):
 
 # Предоставить информацию ою уже созданных финансовых целях
 @menu_low.callback_query(F.data == 'user_fingoal')
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
+async def view_fingoals(callback: CallbackQuery):
+    user_id = callback.from_user.id
+    result = dbh.search_user_fingoals(user_id)
+    await callback.message.answer(result)
 
 
 # Отправка клавиатуры статистики
