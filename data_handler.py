@@ -32,7 +32,6 @@ def make_work_menu():
 def statistic_keyboard():
     statistic_kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text='Сегодня', callback_data='today_stat')],
-        [InlineKeyboardButton(text='Неделя', callback_data='week_stat')],
         [InlineKeyboardButton(text='Месяц', callback_data='month_stat')],
         [InlineKeyboardButton(text='<--', callback_data='work_menu')]
     ])
@@ -47,3 +46,13 @@ def detele_keyboard():
         [InlineKeyboardButton(text='<--', callback_data='work_menu')]
     ])
     return delete_kb
+
+
+# Клавиатура главного меню
+def reply_workmenu():
+    #btn = KeyboardButton("Главное меню")
+    #reply_kb = ReplyKeyboardMarkup(keyboard=[btn], resize_keyboard=True, one_time_keyboard=True)
+    reply_kb = ReplyKeyboardMarkup(keyboard=[
+        [KeyboardButton(text='Главное меню')]
+    ], resize_keyboard=True)
+    return reply_kb

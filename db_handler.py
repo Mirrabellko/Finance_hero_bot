@@ -1,3 +1,4 @@
+import datetime
 from datetime import date
 import sqlite3
 import hashlib
@@ -162,7 +163,7 @@ def search_user_fingoals(username: str):
     return result
 
 
-# Красивое оформление проводок из бд:
+# Красивое оформление финцелей из бд:
 def __make_fingoals_str(user_fingoals: list[tuple]):
     updown = "__________________________\n"
     title =  "    Сумма        |     Цель\n"
@@ -358,4 +359,105 @@ def __check_keyword(keyword: str):
             return None, "🔴Сумма не найдена.\nВведите сумму для удаления.\n(Образец: !сумма\nкомментарий)"
 
 
-# 
+# Обработка статистики
+def show_statistic(username: str, period:int=1):
+
+    data_tuple = __check_period(period)
+
+    print("Указанный параметр:", data_tuple[0], "--", data_tuple[1])
+    # Выборка из бд за нужный период
+    expense_list = __search_db_time_expense(data_tuple[0], data_tuple[1], username)
+    income_list = __search_db_time_income(data_tuple[0], data_tuple[1], username)
+
+    # Представление данных в строку
+    result = __make_trans_str(expense_list, income_list)
+
+    return result
+
+#Проверка периода статистики, возвращает кортеж
+def __check_period(period: int):
+    
+    if period == 1:
+        data = date.today(), date.today()
+
+    if period == 30:
+        current_data = date.today()
+        next_data = __count_period()
+        data = current_data, next_data
+    
+    return data
+
+
+# Считает финальную дату для статистики за месяц
+def __count_period():
+    today = date.today()
+    
+    new_month = today.month
+    new_year = today.year
+    
+    new_month = new_month + 1
+
+    if new_month == 13:
+        new_month = new_month - 12
+        new_year += 1
+
+    data = today.replace(year=new_year, month=new_month)
+    return data
+
+
+# Выборка из бд операций за указанный период expense
+def __search_db_time_expense(data_start: datetime, data_finish: datetime, username: str):
+    trans = username, data_start, data_finish
+    connect, cursor = __db_connection()
+    result = None
+    
+    cursor.execute("SELECT spending, comment FROM expense WHERE username=? AND data BETWEEN ? AND ?", trans)
+    result = cursor.fetchall()
+    connect.commit()
+    connect.close()
+
+    if len(result) == 0:
+        return []
+    
+    print("Результат поиска в таблице expense", result)
+
+    return result
+
+
+# Выборка из бд операций за указанный период income
+def __search_db_time_income(data_start: datetime, data_finish: datetime, username: str):
+    trans = username, data_start, data_finish
+    connect, cursor = __db_connection()
+    result = None
+    
+    cursor.execute("SELECT profit, comment FROM income WHERE username=? AND data BETWEEN ? AND ?", trans)
+    result = cursor.fetchall()
+    connect.commit()
+    connect.close()
+
+    if len(result) == 0:
+        return []
+    
+    print("Результат поиска в таблице income", result)
+
+    return result
+
+
+
+# Красивое оформление операций из бд:
+def __make_trans_str(expense: list[tuple], income: list[tuple]):
+    updown = "__________________________\n"
+    title =  "    Сумма        |     Цель\n"
+    result = updown + title + updown
+
+    print(result)
+
+    for elem in income:
+        summa, comment = elem
+        result = result + '\n' + '🟢' + str(summa) + '         ' + comment + '\n' + updown
+
+    for elem in expense:
+        summa, comment = elem
+        result = result + '\n' + '🔴' + str(summa) + '         ' + comment + '\n' + updown
+
+    return result

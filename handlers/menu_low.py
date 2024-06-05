@@ -11,15 +11,17 @@ menu_low = Router()
 # Обработчик команды /start
 @menu_low.message(Command('start'))
 async def send_welcome(message: types.Message):
-    kb = dh.make_register_keyboard()
-    await message.answer("<b>Привет. Что желаешь?💸</b>", reply_markup=kb)
+    await message.answer("<b>Привет. Какой у тебя пароль?💸</b>\n\nПри первичном запуске система его запомнит.\nНеобходимо отправить по следующему образцу:\n(Образец: =пароль)")
 
 
-# Обработчик новой регистрации
-@menu_low.callback_query(F.data == 'new_user')
+# Обработчик основного меню
+@menu_low.callback_query(F.data == 'work_menu')
 async def reg_new_user(callback: CallbackQuery):
-    await callback.answer('Начинаем регистрацию', show_alert=True)
-    await callback.message.edit_text("Придумай свой пароль. \nНеобходимо отправить по следующему образцу:\n(Образец: =пароль)")
+    await callback.answer('Приятного использования💝', show_alert=True)
+    kb = dh.make_work_menu()
+    add_info = '\n\nДля добавления операции используйте формат:\n✔️\n + сумма\nкомментарий\n<b>или</b>\n❌\n - сумма\nкомментарий'
+    await callback.message.edit_text(add_info, reply_markup=kb)
+
 
 
 # Обработчик возврата в главное меню
@@ -48,13 +50,13 @@ async def fingoal_menu(callback: CallbackQuery):
 async def view_fingoals(callback: CallbackQuery):
     user_id = callback.from_user.id
     result = dbh.search_user_fingoals(user_id)
-    await callback.message.answer(result)
+    await callback.message.reply(result, reply_markup=dh.reply_workmenu())
 
 
 # Отправка клавиатуры статистики
 @menu_low.callback_query(F.data == 'statistic_kb')
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
+async def show_userstat_kb(callback: CallbackQuery):
+    await callback.message.edit_text("Выбери, за какой период❓", reply_markup= dh.statistic_keyboard())
 
 
 # Отправка клавиатуры меню удаления
@@ -64,9 +66,22 @@ async def add_new_fingoal(callback: CallbackQuery):
 
 
 
-# Отправка статистики за выбранный период
-@menu_low.callback_query(F.text.contains("_stat"))
-async def add_new_fingoal(callback: CallbackQuery):
-    pass
+# Отправка статистики за текущий день
+@menu_low.callback_query(F.data == "today_stat")
+async def show_userstat_day(callback: CallbackQuery):
+    print("Отлов статистики сегодня")
+    user_id = callback.from_user.id
+    result = dbh.show_statistic(user_id)
+    await callback.message.reply(result, reply_markup=dh.reply_workmenu())
 
+
+
+# Отправка статистики за месяц
+@menu_low.callback_query(F.data == "month_stat")
+async def show_userstat_month(callback: CallbackQuery):
+    print("Отлов статистики месяц")
+    user_id = callback.from_user.id
+    period = 30
+    result = dbh.show_statistic(user_id, period)
+    await callback.message.reply(result, reply_markup=dh.reply_workmenu())
 
